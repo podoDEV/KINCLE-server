@@ -20,7 +20,7 @@
         <!-- mysql -->
         <mysql.version>5.7.45</mysql.version>
         <!-- jackson -->
-        <jackson2.version>2.9.4</jackson2.version>
+        <jackson2.version>2.10.3</jackson2.version>
         <source-encoding>UTF-8</source-encoding>
         <resource-encoding>UTF-8</resource-encoding>
     </properties>
