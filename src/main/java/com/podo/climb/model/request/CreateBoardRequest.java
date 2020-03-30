@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateBoardRequest {
-    String subject;
-    String comment;
-    String image;
+    String title;
+    String description;
+    String imageUrl;
 }

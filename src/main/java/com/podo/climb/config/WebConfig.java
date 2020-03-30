@@ -1,5 +1,7 @@
 package com.podo.climb.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @ComponentScan("com.podo.climb")
 public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login/form").setViewName("loginForm");

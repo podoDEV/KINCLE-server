@@ -2,12 +2,16 @@ package com.podo.climb.controller;
 
 import com.podo.climb.model.AuthenticationToken;
 import com.podo.climb.model.request.SignInRequest;
+import com.podo.climb.model.response.ApiResult;
+import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.AuthenticationService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,15 +28,19 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @ApiOperation(value = "로그인", notes = "성공 시 토큰을 반환. `X-Auth-Token` Header 에 추가 시 사용자 권한 획득")
     @PostMapping(value = "/v1/signin")
-    public AuthenticationToken signIn(
+    public ApiResult<AuthenticationToken> signIn(
             @RequestBody SignInRequest signInRequest,
-            HttpSession session) {
-        return authenticationService.signIn(signInRequest, session);
+            @ApiIgnore HttpSession session) {
+        return new SuccessfulResult(authenticationService.signIn(signInRequest, session));
     }
 
+    @ApiOperation(value = "로그아웃")
     @GetMapping(value = "v1/signout")
-    public void signOut(HttpServletRequest request, HttpServletResponse response) {
+    public ApiResult signOut(HttpServletRequest request,
+                             HttpServletResponse response) {
         authenticationService.signOut(request, response);
+        return new SuccessfulResult();
     }
 }

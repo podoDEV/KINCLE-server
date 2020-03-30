@@ -28,13 +28,13 @@ import java.util.Properties;
 @Import(com.podo.climb.config.SecurityConfig.class)
 public class RootConfig {
 
-    @Value("${jdbcUrl}")
+    @Value("${jdbc.url}")
     private String jdbcUrl;
 
-    @Value("${jdbcUser}")
+    @Value("${jdbc.username}")
     private String jdbcUser;
 
-    @Value("${jdbcPassword}")
+    @Value("${jdbc.password}")
     private String jdbcPassword;
 
     @Bean

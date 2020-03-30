@@ -4,6 +4,7 @@ import com.podo.climb.Utils.IdGenerator;
 import com.podo.climb.encoder.Sha256PasswordEncoder;
 import com.podo.climb.entity.Member;
 import com.podo.climb.entity.MemberRole;
+import com.podo.climb.exception.ApiFailedException;
 import com.podo.climb.model.MemberRoleType;
 import com.podo.climb.model.OauthType;
 import com.podo.climb.model.request.CreateMemberRequest;
@@ -25,16 +26,18 @@ public class MemberService {
     }
 
     @Transactional
-    public void createMember(CreateMemberRequest createMemberRequest) {
+    public Member createMember(CreateMemberRequest createMemberRequest) {
         OauthType oauthType = createMemberRequest.getOauthType();
         if (OauthType.SELF.equals(oauthType)) {
-            createSelfMember(createMemberRequest);
+            return createSelfMember(createMemberRequest);
         } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
-            createOauthMember(createMemberRequest);
+            return createOauthMember(createMemberRequest);
+        } else {
+            throw new ApiFailedException(400, "제공하지 않는 로그인 타입입니다.");
         }
     }
 
-    private void createSelfMember(CreateMemberRequest createMemberRequest) {
+    private Member createSelfMember(CreateMemberRequest createMemberRequest) {
         Member member = new Member();
         Long memberId = IdGenerator.generate();
         member.setMemberId(memberId);
@@ -48,9 +51,10 @@ public class MemberService {
         memberRole.setRole(MemberRoleType.MEMBER);
         member.setMemberRole(Collections.singletonList(memberRole));
         memberRepository.saveAndFlush(member);
+        return member;
     }
 
-    private void createOauthMember(CreateMemberRequest createMemberRequest) {
+    private Member createOauthMember(CreateMemberRequest createMemberRequest) {
         Member member = new Member();
         Long memberId = IdGenerator.generate();
         member.setMemberId(memberId);
@@ -64,6 +68,7 @@ public class MemberService {
         memberRole.setRole(MemberRoleType.MEMBER);
         member.setMemberRole(Collections.singletonList(memberRole));
         memberRepository.saveAndFlush(member);
+        return member;
     }
 
 

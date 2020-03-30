@@ -19,14 +19,14 @@ public class Board {
     @Column(name = "board_id")
     private Long boardId;
 
-    @Column(name = "subject")
+    @Column(name = "title")
     private String subject;
 
-    @Column(name = "comment")
+    @Column(name = "description")
     private String comment;
 
-    @Column(name = "image")
-    private String image;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "creator")
     private String creator;
@@ -36,7 +36,7 @@ public class Board {
         boardResponse.setBoardId(boardId);
         boardResponse.setSubject(subject);
         boardResponse.setComment(comment);
-        boardResponse.setImage(image);
+        boardResponse.setImage(imageUrl);
         boardResponse.setCreator(creator);
         return boardResponse;
     }

@@ -1,10 +1,10 @@
 package com.podo.climb.service;
 
-import com.podo.climb.model.response.BoardResponse;
-import com.podo.climb.model.request.CreateBoardRequest;
 import com.podo.climb.Utils.IdGenerator;
 import com.podo.climb.entity.Board;
 import com.podo.climb.entity.Member;
+import com.podo.climb.model.request.CreateBoardRequest;
+import com.podo.climb.model.response.BoardResponse;
 import com.podo.climb.repository.BoardRepository;
 import com.podo.climb.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,17 @@ public class BoardService {
     }
 
     @Transactional
-    public void createBoard(CreateBoardRequest requestedCreateBoard) {
+    public Board createBoard(CreateBoardRequest requestedCreateBoard) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Board board = new Board();
         board.setBoardId(IdGenerator.generate());
-        board.setSubject(requestedCreateBoard.getSubject());
-        board.setComment(requestedCreateBoard.getComment());
-        board.setImage(requestedCreateBoard.getImage());
+        board.setSubject(requestedCreateBoard.getTitle());
+        board.setComment(requestedCreateBoard.getDescription());
+        board.setImageUrl(requestedCreateBoard.getImageUrl());
         Member member = memberRepository.findByMemberId(Long.valueOf(user.getUsername()));
         board.setCreator(member.getNickname());
         boardRepository.save(board);
+        return board;
     }
 
 

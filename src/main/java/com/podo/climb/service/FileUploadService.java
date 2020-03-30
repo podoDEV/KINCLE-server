@@ -1,5 +1,6 @@
 package com.podo.climb.service;
 
+import com.podo.climb.model.response.FileUploadResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +13,7 @@ public class FileUploadService {
     private static final String SAVE_PATH = "/Users/nhnent/Downloads/upload";
     private static final String PREFIX_URL = "/img/";
 
-    public String restore(MultipartFile multipartFile) {
+    public FileUploadResponse restore(MultipartFile multipartFile) {
         String url;
         try {
             // 파일 정보
@@ -34,7 +35,7 @@ public class FileUploadService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return url;
+        return new FileUploadResponse(url);
     }
 
 

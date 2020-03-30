@@ -1,5 +1,6 @@
 package com.podo.climb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,9 @@ import java.util.Collection;
 @Setter
 public class AuthenticationToken {
 
+    @JsonIgnore
     private String username;
+    @JsonIgnore
     private Collection authorities;
     private String token;
 
