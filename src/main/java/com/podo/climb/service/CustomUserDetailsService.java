@@ -4,6 +4,7 @@ import com.podo.climb.entity.Member;
 import com.podo.climb.entity.MemberRole;
 import com.podo.climb.model.MemberRoleType;
 import com.podo.climb.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

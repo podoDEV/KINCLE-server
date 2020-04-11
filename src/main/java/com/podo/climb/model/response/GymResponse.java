@@ -11,11 +11,14 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class BoardResponse {
+public class GymResponse {
     @JsonSerialize(using = ToStringSerializer.class)
-    Long boardId;
-    String title;
+    Long gymId;
+    String name;
     String description;
+    String address;
     String imageUrl;
-    String creator;
+    String openingHours;
+    @JsonSerialize(using = ToStringSerializer.class)
+    Long creatorId;
 }

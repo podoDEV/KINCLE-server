@@ -2,7 +2,10 @@ package com.podo.climb.entity;
 
 import com.podo.climb.entity.converter.OauthTypeConverter;
 import com.podo.climb.model.OauthType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -19,6 +22,9 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Members")
 public class Member {
 
@@ -35,8 +41,8 @@ public class Member {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "profile_image")
-    private String profileImage;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
 
     @Column(name = "level")
     private Integer level;

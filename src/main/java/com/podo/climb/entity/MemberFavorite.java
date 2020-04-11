@@ -1,8 +1,5 @@
 package com.podo.climb.entity;
 
-import com.podo.climb.entity.converter.MemberRoleTypeConverter;
-import com.podo.climb.entity.converter.OauthTypeConverter;
-import com.podo.climb.model.MemberRoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,14 +17,16 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "MemberRole")
-public class MemberRole {
+@Table(name = "MemberFavorites")
+public class MemberFavorite {
     @Id
+    @Column(name = "member_favorite_id")
+    private Long memberFavoriteId;
+
     @Column(name = "member_id")
     private Long memberId;
 
-    @Convert(converter = MemberRoleTypeConverter.class)
-    @Column(name = "role")
-    private MemberRoleType role;
+    @Column(name = "gym_id")
+    private Long gymId;
 
 }

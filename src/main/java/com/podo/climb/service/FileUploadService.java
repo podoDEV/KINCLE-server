@@ -1,6 +1,7 @@
 package com.podo.climb.service;
 
 import com.podo.climb.model.response.FileUploadResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,8 +11,10 @@ import java.util.Calendar;
 
 @Service
 public class FileUploadService {
-    private static final String SAVE_PATH = "/Users/nhnent/Downloads/upload";
-    private static final String PREFIX_URL = "/img/";
+
+    @Value("${file.path}")
+    private String filePath;
+    private static final String prefixUrl = "/img/";
 
     public FileUploadResponse restore(MultipartFile multipartFile) {
         String url;
@@ -31,7 +34,7 @@ public class FileUploadService {
             System.out.println("saveFileName : " + saveFileName);
 
             writeFile(multipartFile, saveFileName);
-            url = PREFIX_URL + saveFileName;
+            url = prefixUrl + saveFileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +66,7 @@ public class FileUploadService {
         boolean result = false;
 
         byte[] data = multipartFile.getBytes();
-        FileOutputStream fos = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
+        FileOutputStream fos = new FileOutputStream(filePath + saveFileName);
         fos.write(data);
         fos.close();
 

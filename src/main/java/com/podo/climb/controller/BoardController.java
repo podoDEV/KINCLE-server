@@ -31,8 +31,8 @@ public class BoardController {
     }
 
     @GetMapping("/v1/board/{boardId}")
-    public ApiResult<BoardResponse> readBoard(@PathVariable Long boardId) {
-        return new SuccessfulResult<>(boardService.readBoard(boardId));
+    public ApiResult<BoardResponse> getBoard(@PathVariable Long boardId) {
+        return new SuccessfulResult<>(boardService.getBoard(boardId));
     }
 
     @DeleteMapping("/v1/board")

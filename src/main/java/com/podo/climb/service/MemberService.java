@@ -10,6 +10,8 @@ import com.podo.climb.model.OauthType;
 import com.podo.climb.model.request.CreateMemberRequest;
 import com.podo.climb.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,37 +40,57 @@ public class MemberService {
     }
 
     private Member createSelfMember(CreateMemberRequest createMemberRequest) {
-        Member member = new Member();
         Long memberId = IdGenerator.generate();
-        member.setMemberId(memberId);
-        member.setNickname(createMemberRequest.getNickname());
         Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
-        member.setPassword(sha256PasswordEncoder.encode(createMemberRequest.getPassword()));
-        member.setEmailAddress(createMemberRequest.getEmailAddress());
-        member.setOauthType(createMemberRequest.getOauthType());
-        MemberRole memberRole = new MemberRole();
-        memberRole.setMemberId(memberId);
-        memberRole.setRole(MemberRoleType.MEMBER);
+        Member member = Member.builder()
+                              .memberId(memberId)
+                              .nickname(createMemberRequest.getNickname())
+                              .password(sha256PasswordEncoder.encode(createMemberRequest.getPassword()))
+                              .emailAddress(createMemberRequest.getEmailAddress())
+                              .oauthType(createMemberRequest.getOauthType())
+                              .build();
+
+        MemberRole memberRole = MemberRole.builder()
+                                          .memberId(memberId)
+                                          .role(MemberRoleType.MEMBER)
+                                          .build();
+
         member.setMemberRole(Collections.singletonList(memberRole));
         memberRepository.saveAndFlush(member);
         return member;
     }
 
     private Member createOauthMember(CreateMemberRequest createMemberRequest) {
-        Member member = new Member();
         Long memberId = IdGenerator.generate();
-        member.setMemberId(memberId);
-        member.setNickname(createMemberRequest.getNickname());
-        member.setPassword(createMemberRequest.getToken());
-        member.setEmailAddress(createMemberRequest.getEmailAddress());
-        member.setToken(createMemberRequest.getToken());
-        member.setOauthType(createMemberRequest.getOauthType());
-        MemberRole memberRole = new MemberRole();
-        memberRole.setMemberId(memberId);
-        memberRole.setRole(MemberRoleType.MEMBER);
+        Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
+        Member member = Member.builder()
+                              .memberId(memberId)
+                              .nickname(createMemberRequest.getNickname())
+                              .password(sha256PasswordEncoder.encode(createMemberRequest.getToken()))
+                              .emailAddress(createMemberRequest.getEmailAddress())
+                              .token(createMemberRequest.getToken())
+                              .oauthType(createMemberRequest.getOauthType())
+                              .build();
+
+        MemberRole memberRole = MemberRole.builder()
+                                          .memberId(memberId)
+                                          .role(MemberRoleType.MEMBER)
+                                          .build();
+
         member.setMemberRole(Collections.singletonList(memberRole));
         memberRepository.saveAndFlush(member);
         return member;
+    }
+
+    //TODO: 시스템 어드민 추가가 어려움에 따라 정보를 못 가져오는 경우(테스트), 특정 계정을 사용함
+    @Transactional
+    public Member getCurrentMember() {
+        try {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return memberRepository.findByMemberId(Long.valueOf(user.getUsername()));
+        } catch (Exception e) {
+            return memberRepository.findByMemberId(2720638695768271459L);
+        }
     }
 
 
