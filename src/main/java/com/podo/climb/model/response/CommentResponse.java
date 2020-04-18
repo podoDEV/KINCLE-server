@@ -14,12 +14,12 @@ import java.util.Calendar;
 @Setter
 @Builder
 @ToString
-public class BoardResponse {
+public class CommentResponse {
+    @JsonSerialize(using = ToStringSerializer.class)
+    Long commentId;
     @JsonSerialize(using = ToStringSerializer.class)
     Long boardId;
-    String title;
     String description;
-    String imageUrl;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZZ", timezone = "GMT+09:00")
     Calendar createAt;
     String creator;

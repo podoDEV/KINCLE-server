@@ -1,6 +1,6 @@
 package com.podo.climb.entity;
 
-import com.podo.climb.model.response.BoardResponse;
+import com.podo.climb.model.response.CommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,21 +19,18 @@ import java.util.Calendar;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "Boards")
-public class Board {
+@Table(name = "Comments")
+public class Comment {
 
     @Id
+    @Column(name = "comment_id")
+    private Long commentId;
+
     @Column(name = "board_id")
     private Long boardId;
 
-    @Column(name = "title")
-    private String title;
-
     @Column(name = "description")
     private String description;
-
-    @Column(name = "image_url")
-    private String imageUrl;
 
     @Column(name = "created_at")
     private Calendar createAt;
@@ -41,14 +38,13 @@ public class Board {
     @Column(name = "creator")
     private String creator;
 
-    public BoardResponse toBoardResponse() {
-        return BoardResponse.builder()
-                            .boardId(this.boardId)
-                            .title(this.title)
-                            .description(this.description)
-                            .imageUrl(this.imageUrl)
-                            .createAt(this.createAt)
-                            .creator(this.creator)
-                            .build();
+    public CommentResponse toCommentResponse() {
+        return CommentResponse.builder()
+                              .commentId(this.commentId)
+                              .boardId(this.boardId)
+                              .description(this.description)
+                              .createAt(this.createAt)
+                              .creator(this.creator)
+                              .build();
     }
 }

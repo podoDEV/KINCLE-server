@@ -8,11 +8,11 @@ import lombok.Setter;
 public class SuccessfulResult<T> extends ApiResult<T> {
 
     public SuccessfulResult() {
-        super(0);
+        super(200);
     }
 
     public SuccessfulResult(T response) {
-        super(0, response);
+        super(200, response);
     }
 
 }

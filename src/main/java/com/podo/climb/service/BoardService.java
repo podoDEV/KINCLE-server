@@ -2,29 +2,34 @@ package com.podo.climb.service;
 
 import com.podo.climb.Utils.IdGenerator;
 import com.podo.climb.entity.Board;
+import com.podo.climb.entity.Comment;
 import com.podo.climb.entity.Member;
 import com.podo.climb.model.request.CreateBoardRequest;
 import com.podo.climb.model.response.BoardResponse;
+import com.podo.climb.model.response.CommentResponse;
 import com.podo.climb.repository.BoardRepository;
-import com.podo.climb.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
 
     private MemberService memberService;
+    private CommentService commentService;
     private BoardRepository boardRepository;
-    private MemberRepository memberRepository;
 
     @Autowired
     BoardService(MemberService memberService,
-                 BoardRepository boardRepository,
-                 MemberRepository memberRepository) {
+                 CommentService commentService,
+                 BoardRepository boardRepository) {
         this.memberService = memberService;
+        this.commentService = commentService;
         this.boardRepository = boardRepository;
-        this.memberRepository = memberRepository;
     }
 
     @Transactional
@@ -34,8 +39,10 @@ public class BoardService {
                            .boardId(IdGenerator.generate())
                            .title(requestedCreateBoard.getTitle())
                            .description(requestedCreateBoard.getDescription())
-                           .imageUrl(requestedCreateBoard.getImageUrl()).build();
-        board.setCreator(member.getNickname());
+                           .imageUrl(requestedCreateBoard.getImageUrl())
+                           .createAt(Calendar.getInstance())
+                           .creator(member.getNickname())
+                           .build();
         boardRepository.save(board);
         return board;
     }
@@ -45,6 +52,12 @@ public class BoardService {
     public BoardResponse getBoard(Long boardId) {
         Board board = boardRepository.findByBoardId(boardId);
         return board.toBoardResponse();
+    }
+
+
+    public List<CommentResponse> getComments(Long boardId) {
+        List<Comment> comments = commentService.getComments(boardId);
+        return comments.stream().map(Comment::toCommentResponse).collect(Collectors.toList());
     }
 
     @Transactional
