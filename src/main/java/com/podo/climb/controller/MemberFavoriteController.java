@@ -26,21 +26,21 @@ public class MemberFavoriteController {
     }
 
     @ApiOperation(value = "즐겨찾는 암장 등록")
-    @PostMapping("/v1/member/favorite")
+    @PostMapping("/v1/members/favorite")
     public ApiResult createMemberFavorite(@RequestBody MemberFavoriteRequest memberFavoriteRequest) {
         memberFavoriteService.createMemberFavorite(memberFavoriteRequest);
         return new SuccessfulResult();
     }
 
     @ApiOperation(value = "즐겨찾는 암장 삭제")
-    @DeleteMapping("/v1/member/favorite")
+    @DeleteMapping("/v1/members/favorite")
     public ApiResult deleteMemberFavorite(@RequestBody MemberFavoriteRequest memberFavoriteRequest) {
         memberFavoriteService.deleteMemberFavorite(memberFavoriteRequest);
         return new SuccessfulResult();
     }
 
     @ApiOperation(value = "현재 사용자의 즐겨찾는 암장 모두 조회")
-    @GetMapping("/v1/member/favorite")
+    @GetMapping("/v1/members/favorite")
     public ApiResult<List<Gym>> getMemberFavorites() {
         return new SuccessfulResult<>(memberFavoriteService.getFavorites());
     }

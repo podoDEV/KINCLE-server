@@ -37,7 +37,7 @@ public class AuthenticationController {
     }
 
     @ApiOperation(value = "로그아웃")
-    @GetMapping(value = "v1/signout")
+    @GetMapping(value = "/v1/signout")
     public ApiResult signOut(HttpServletRequest request,
                              HttpServletResponse response) {
         authenticationService.signOut(request, response);

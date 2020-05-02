@@ -7,6 +7,7 @@ import com.podo.climb.model.response.CommentResponse;
 import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +24,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/v1/comment")
+    @PostMapping("/v1/comments")
     public ApiResult<Comment> createComment(@RequestBody CommentRequest commentRequest) {
         return new SuccessfulResult<>(commentService.createComment(commentRequest));
     }
 
-    @GetMapping("/v1/comment/{commentId}")
-    public ApiResult<CommentResponse> getBoard(@PathVariable Long commentId) {
+    @GetMapping("/v1/comments/{commentId}")
+    public ApiResult<CommentResponse> getComment(@PathVariable Long commentId, Pageable pageable) {
         return new SuccessfulResult<>(commentService.getComment(commentId));
     }
 

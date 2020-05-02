@@ -7,6 +7,8 @@ import com.podo.climb.model.request.CommentRequest;
 import com.podo.climb.model.response.CommentResponse;
 import com.podo.climb.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +50,8 @@ public class CommentService {
     }
 
     @Transactional
-    public List<Comment> getComments(Long boardId) {
-        return commentRepository.findByBoardId(boardId);
+    public Page<Comment> getComments(Long boardId, Pageable pageable) {
+        return commentRepository.findAllByBoardId(boardId, pageable);
     }
 
     @Transactional

@@ -26,13 +26,13 @@ public class GymController {
     }
 
     @ApiOperation(value = "암장 정보 생성")
-    @PostMapping("/v1/gym")
+    @PostMapping("/v1/gyms")
     public ApiResult<Gym> createGym(@RequestBody CreateGymRequest createGymRequest) {
         return new SuccessfulResult<>(gymService.createGym(createGymRequest));
     }
 
     @ApiOperation(value = "전체 암장 정보 조회")
-    @GetMapping("/v1/gym")
+    @GetMapping("/v1/gyms")
     public ApiResult<List<GymResponse>> getGyms() {
         return new SuccessfulResult<>(gymService.getGyms());
     }

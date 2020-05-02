@@ -7,11 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity
 @Setter
@@ -35,6 +33,7 @@ public class Board {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Calendar createAt;
 

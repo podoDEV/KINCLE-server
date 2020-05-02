@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Calendar;
 
 @Entity
@@ -32,6 +34,7 @@ public class Comment {
     @Column(name = "description")
     private String description;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Calendar createAt;
 

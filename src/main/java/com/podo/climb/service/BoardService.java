@@ -4,17 +4,19 @@ import com.podo.climb.Utils.IdGenerator;
 import com.podo.climb.entity.Board;
 import com.podo.climb.entity.Comment;
 import com.podo.climb.entity.Member;
+import com.podo.climb.entity.MembersBoardLike;
 import com.podo.climb.model.request.CreateBoardRequest;
 import com.podo.climb.model.response.BoardResponse;
 import com.podo.climb.model.response.CommentResponse;
 import com.podo.climb.repository.BoardRepository;
+import com.podo.climb.repository.MembersBoardLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
@@ -22,14 +24,17 @@ public class BoardService {
     private MemberService memberService;
     private CommentService commentService;
     private BoardRepository boardRepository;
+    private MembersBoardLikeRepository membersBoardLikeRepository;
 
     @Autowired
     BoardService(MemberService memberService,
                  CommentService commentService,
-                 BoardRepository boardRepository) {
+                 BoardRepository boardRepository,
+                 MembersBoardLikeRepository membersBoardLikeRepository) {
         this.memberService = memberService;
         this.commentService = commentService;
         this.boardRepository = boardRepository;
+        this.membersBoardLikeRepository = membersBoardLikeRepository;
     }
 
     @Transactional
@@ -51,14 +56,51 @@ public class BoardService {
     @Transactional
     public BoardResponse getBoard(Long boardId) {
         Board board = boardRepository.findByBoardId(boardId);
-        return board.toBoardResponse();
+        if (board == null) {
+            return new BoardResponse();
+        }
+
+
+        BoardResponse boardResponse = board.toBoardResponse();
+        Member member = memberService.getCurrentMember();
+        boardResponse.setIsLike(membersBoardLikeRepository.findFirstByMemberIdAndBoardId(member.getMemberId(), boardResponse.getBoardId()) != null);
+        return boardResponse;
+    }
+
+    @Transactional
+    public Page<BoardResponse> getBoards(Pageable pageable) {
+        Page<Board> boards = boardRepository.findAll(pageable);
+        Member member = memberService.getCurrentMember();
+        return boards.map(Board::toBoardResponse)
+                     .map(boardResponse -> {
+                         boardResponse.setIsLike(membersBoardLikeRepository.findFirstByMemberIdAndBoardId(member.getMemberId(), boardResponse.getBoardId()) != null);
+                         return boardResponse;
+                     });
     }
 
 
-    public List<CommentResponse> getComments(Long boardId) {
-        List<Comment> comments = commentService.getComments(boardId);
-        return comments.stream().map(Comment::toCommentResponse).collect(Collectors.toList());
+    public Page<CommentResponse> getComments(Long boardId, Pageable pageable) {
+        Page<Comment> comments = commentService.getComments(boardId, pageable);
+        return comments.map(Comment::toCommentResponse);
+
     }
+
+    public void createLike(Long boardId) {
+        Member member = memberService.getCurrentMember();
+        MembersBoardLike membersBoardLike = MembersBoardLike.builder()
+                                                            .memberFavoriteId(IdGenerator.generate())
+                                                            .memberId(member.getMemberId())
+                                                            .boardId(boardId)
+                                                            .build();
+        membersBoardLikeRepository.save(membersBoardLike);
+
+    }
+
+    public void deleteLike(Long boardId) {
+        Member member = memberService.getCurrentMember();
+        membersBoardLikeRepository.deleteAllByMemberIdAndBoardId(member.getMemberId(), boardId);
+    }
+
 
     @Transactional
     public void deleteBoard() {

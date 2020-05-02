@@ -20,7 +20,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/v1/member")
+    @PostMapping("/v1/members")
     public ApiResult<Member> createMember(@RequestBody CreateMemberRequest createMemberRequest) {
         return new SuccessfulResult(memberService.createMember(createMemberRequest));
     }

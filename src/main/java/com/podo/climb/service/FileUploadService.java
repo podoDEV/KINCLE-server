@@ -28,11 +28,6 @@ public class FileUploadService {
             // 서버에서 저장 할 파일 이름
             String saveFileName = genSaveFileName(extName);
 
-            System.out.println("originFilename : " + originFilename);
-            System.out.println("extensionName : " + extName);
-            System.out.println("size : " + size);
-            System.out.println("saveFileName : " + saveFileName);
-
             writeFile(multipartFile, saveFileName);
             url = prefixUrl + saveFileName;
         } catch (IOException e) {
