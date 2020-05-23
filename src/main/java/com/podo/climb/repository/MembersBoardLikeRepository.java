@@ -9,4 +9,6 @@ public interface MembersBoardLikeRepository extends JpaRepository<MembersBoardLi
     MembersBoardLike findFirstByMemberIdAndBoardId(Long memberId, Long boardId);
 
     void deleteAllByMemberIdAndBoardId(Long memberId, Long boardId);
+
+    void deleteAllByBoardId(Long boardId);
 }

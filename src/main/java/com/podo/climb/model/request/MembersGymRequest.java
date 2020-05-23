@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberFavoriteRequest {
+public class MembersGymRequest {
     Long gymId;
 }

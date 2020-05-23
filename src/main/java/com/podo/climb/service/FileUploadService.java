@@ -1,12 +1,16 @@
 package com.podo.climb.service;
 
 import com.podo.climb.model.response.FileUploadResponse;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 @Service
@@ -14,7 +18,40 @@ public class FileUploadService {
 
     @Value("${file.path}")
     private String filePath;
+
+    @Value("${profile.file.path}")
+    private String profileFilePath;
+
     private static final String prefixUrl = "/img/";
+
+    @Value("${thumbnail.width}")
+    private int thumbNailWidth;
+    @Value("${thumbnail.height}")
+    private int thumbNailHeight;
+
+    public FileUploadResponse restoreProfileImage(MultipartFile multipartFile) {
+        try {
+
+            InputStream in = multipartFile.getInputStream();
+
+            BufferedImage originalImage = ImageIO.read(in);
+            String originFilename = multipartFile.getOriginalFilename();
+            String extName
+                    = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+            String saveFileName = genSaveFileName(extName);
+
+            FileOutputStream fos = new FileOutputStream(filePath + saveFileName);
+            Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
+            fos.close();
+            String url = prefixUrl + saveFileName;
+            return new FileUploadResponse(url);
+
+        } catch (IOException io) {
+            throw new RuntimeException();
+        }
+
+    }
+
 
     public FileUploadResponse restore(MultipartFile multipartFile) {
         String url;

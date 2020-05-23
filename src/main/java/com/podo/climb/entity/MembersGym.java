@@ -17,11 +17,11 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "MemberFavorites")
-public class MemberFavorite {
+@Table(name = "MemberGyms")
+public class MembersGym {
     @Id
-    @Column(name = "member_favorite_id")
-    private Long memberFavoriteId;
+    @Column(name = "members_gym_id")
+    private Long membersGymId;
 
     @Column(name = "member_id")
     private Long memberId;

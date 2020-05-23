@@ -103,8 +103,13 @@ public class BoardService {
 
 
     @Transactional
-    public void deleteBoard() {
-
+    public void deleteBoard(Long boardId) {
+        Board board = boardRepository.findByBoardId(boardId);
+        if (board == null) {
+            return;
+        }
+        membersBoardLikeRepository.deleteAllByBoardId(boardId);
+        boardRepository.deleteByBoardId(boardId);
     }
 
 }

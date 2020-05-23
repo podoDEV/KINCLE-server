@@ -60,10 +60,12 @@ public class BoardController {
         boardService.deleteLike(boardId);
         return new SuccessfulResult();
     }
-    //    @DeleteMapping("/v1/board")
-    //    public ApiResult deleteBoard() {
-    //        return new SuccessfulResult();
-    //    }
+
+    @DeleteMapping("/v1/board/{boardId}")
+    public ApiResult deleteBoard(@PathVariable Long boardId) {
+        boardService.deleteBoard(boardId);
+        return new SuccessfulResult();
+    }
 
 
 }
