@@ -30,28 +30,23 @@ public class FileUploadService {
     private int thumbNailHeight;
 
     public FileUploadResponse restoreProfileImage(MultipartFile multipartFile) {
-        try {
-
-            InputStream in = multipartFile.getInputStream();
-
+        try (InputStream in = multipartFile.getInputStream()) {
             BufferedImage originalImage = ImageIO.read(in);
             String originFilename = multipartFile.getOriginalFilename();
             String extName
                     = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
             String saveFileName = genSaveFileName(extName);
 
-            FileOutputStream fos = new FileOutputStream(filePath + saveFileName);
-            Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
-            fos.close();
-            String url = prefixUrl + saveFileName;
-            return new FileUploadResponse(url);
-
+            try (FileOutputStream fos = new FileOutputStream(filePath + saveFileName)) {
+                Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
+                fos.close();
+                String url = prefixUrl + saveFileName;
+                return new FileUploadResponse(url);
+            }
         } catch (IOException io) {
             throw new RuntimeException();
         }
-
     }
-
 
     public FileUploadResponse restore(MultipartFile multipartFile) {
         String url;
@@ -60,7 +55,6 @@ public class FileUploadService {
             String originFilename = multipartFile.getOriginalFilename();
             String extName
                     = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
-            Long size = multipartFile.getSize();
 
             // 서버에서 저장 할 파일 이름
             String saveFileName = genSaveFileName(extName);
@@ -96,12 +90,10 @@ public class FileUploadService {
     private boolean writeFile(MultipartFile multipartFile, String saveFileName)
             throws IOException {
         boolean result = false;
-
         byte[] data = multipartFile.getBytes();
-        FileOutputStream fos = new FileOutputStream(filePath + saveFileName);
-        fos.write(data);
-        fos.close();
-
+        try (FileOutputStream fos = new FileOutputStream(filePath + saveFileName)) {
+            fos.write(data);
+        }
         return result;
     }
 }

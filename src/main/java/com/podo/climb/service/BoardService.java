@@ -45,8 +45,10 @@ public class BoardService {
                            .title(requestedCreateBoard.getTitle())
                            .description(requestedCreateBoard.getDescription())
                            .imageUrl(requestedCreateBoard.getImageUrl())
-                           .createAt(Calendar.getInstance())
+                           .createdAt(Calendar.getInstance())
                            .creator(member.getNickname())
+                           .gymId(requestedCreateBoard.getGymId())
+                           .likeCount(0)
                            .build();
         boardRepository.save(board);
         return board;
@@ -68,8 +70,13 @@ public class BoardService {
     }
 
     @Transactional
-    public Page<BoardResponse> getBoards(Pageable pageable) {
-        Page<Board> boards = boardRepository.findAll(pageable);
+    public Page<BoardResponse> getBoards(Long gymId, Pageable pageable) {
+        Page<Board> boards;
+        if (gymId != null) {
+            boards = boardRepository.findAllByGymId(gymId, pageable);
+        } else {
+            boards = boardRepository.findAll(pageable);
+        }
         Member member = memberService.getCurrentMember();
         return boards.map(Board::toBoardResponse)
                      .map(boardResponse -> {
@@ -79,26 +86,33 @@ public class BoardService {
     }
 
 
+    @Transactional
     public Page<CommentResponse> getComments(Long boardId, Pageable pageable) {
         Page<Comment> comments = commentService.getComments(boardId, pageable);
         return comments.map(Comment::toCommentResponse);
 
     }
 
+    @Transactional
     public void createLike(Long boardId) {
         Member member = memberService.getCurrentMember();
+        if ((membersBoardLikeRepository.findFirstByMemberIdAndBoardId(member.getMemberId(), boardId) != null)) {
+            return;
+        }
         MembersBoardLike membersBoardLike = MembersBoardLike.builder()
                                                             .memberFavoriteId(IdGenerator.generate())
                                                             .memberId(member.getMemberId())
                                                             .boardId(boardId)
                                                             .build();
         membersBoardLikeRepository.save(membersBoardLike);
-
+        boardRepository.increaseCount(boardId);
     }
 
+    @Transactional
     public void deleteLike(Long boardId) {
         Member member = memberService.getCurrentMember();
         membersBoardLikeRepository.deleteAllByMemberIdAndBoardId(member.getMemberId(), boardId);
+        boardRepository.decreaseCount(boardId);
     }
 
 

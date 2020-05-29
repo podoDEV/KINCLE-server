@@ -7,9 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Calendar;
-import java.util.List;
 
 @Entity
 @Setter
@@ -35,10 +39,16 @@ public class Board {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Calendar createAt;
+    private Calendar createdAt;
 
     @Column(name = "creator")
     private String creator;
+
+    @Column(name = "gym_id")
+    private Long gymId;
+
+    @Column(name = "like_count")
+    private Integer likeCount;
 
     public BoardResponse toBoardResponse() {
         return BoardResponse.builder()
@@ -46,7 +56,7 @@ public class Board {
                             .title(this.title)
                             .description(this.description)
                             .imageUrl(this.imageUrl)
-                            .createAt(this.createAt)
+                            .createAt(this.createdAt)
                             .creator(this.creator)
                             .build();
     }

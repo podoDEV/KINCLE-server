@@ -9,4 +9,5 @@ public class CreateBoardRequest {
     String title;
     String description;
     String imageUrl;
+    Long gymId;
 }

@@ -7,6 +7,8 @@ import com.podo.climb.model.response.BoardResponse;
 import com.podo.climb.model.response.CommentResponse;
 import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.BoardService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,9 +41,12 @@ public class BoardController {
         return new SuccessfulResult<>(boardService.getBoard(boardId));
     }
 
+    @ApiOperation(value = "암장 조회")
     @GetMapping("/v1/boards")
-    public ApiResult<Page<BoardResponse>> getBoards(Pageable pageable) {
-        return new SuccessfulResult(boardService.getBoards(pageable));
+    public ApiResult<Page<BoardResponse>> getBoards(@ApiParam(value = "암장으로 필터") @RequestParam(required = false) Long gymId,
+                                                    @ApiParam(value = "sort=createdAt,likeCount") Pageable pageable) {
+
+        return new SuccessfulResult(boardService.getBoards(gymId, pageable));
     }
 
     @GetMapping("/v1/boards/{boardId}/comments")
