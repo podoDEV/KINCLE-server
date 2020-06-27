@@ -41,7 +41,7 @@ public class BoardController {
         return new SuccessfulResult<>(boardService.getBoard(boardId));
     }
 
-    @ApiOperation(value = "암장 조회")
+    @ApiOperation(value = "")
     @GetMapping("/v1/boards")
     public ApiResult<Page<BoardResponse>> getBoards(@ApiParam(value = "암장으로 필터") @RequestParam(required = false) Long gymId,
                                                     @ApiParam(value = "sort=createdAt,likeCount") Pageable pageable) {

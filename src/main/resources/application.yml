@@ -1,0 +1,29 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  redis:
+    host: localhost
+    password:
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: no.reply.kin.climb@gmail.com
+    password: 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+thumbnail:
+  width: 200
+  height: 200
+file:
+  path: /images/
+profile:
+  file:
+    path: /images/profile/
+server:
+  port: 8080
+

@@ -82,6 +82,10 @@ public class MemberService {
         return member;
     }
 
+    public Member findByEmailAddress(String emailAddress) {
+        return memberRepository.findByEmailAddress(emailAddress);
+    }
+
     //TODO: 시스템 어드민 추가가 어려움에 따라 정보를 못 가져오는 경우(테스트), 특정 계정을 사용함
     @Transactional
     public Member getCurrentMember() {

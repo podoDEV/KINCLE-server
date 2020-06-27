@@ -1,6 +1,7 @@
 package com.podo.climb.controller;
 
 import com.podo.climb.model.AuthenticationToken;
+import com.podo.climb.model.request.ChangePasswordRequest;
 import com.podo.climb.model.request.SignInRequest;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.SuccessfulResult;
@@ -9,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -41,6 +43,12 @@ public class AuthenticationController {
     public ApiResult signOut(HttpServletRequest request,
                              HttpServletResponse response) {
         authenticationService.signOut(request, response);
+        return new SuccessfulResult();
+    }
+
+    @PutMapping(value = "/v1/password")
+    public ApiResult changePassword(ChangePasswordRequest changePasswordRequest) {
+        authenticationService.changePassword(changePasswordRequest.getPassword());
         return new SuccessfulResult();
     }
 }

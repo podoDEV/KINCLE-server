@@ -5,6 +5,7 @@ import com.podo.climb.model.request.CreateMemberRequest;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.FileUploadResponse;
 import com.podo.climb.model.response.SuccessfulResult;
+import com.podo.climb.service.AuthenticationService;
 import com.podo.climb.service.FileUploadService;
 import com.podo.climb.service.MemberService;
 import io.swagger.annotations.ApiOperation;
@@ -20,10 +21,15 @@ public class MemberController {
 
     private MemberService memberService;
     private FileUploadService fileUploadService;
+    private AuthenticationService authenticationService;
 
     @Autowired
-    MemberController(MemberService memberService) {
+    MemberController(MemberService memberService,
+                     FileUploadService fileUploadService,
+                     AuthenticationService authenticationService) {
         this.memberService = memberService;
+        this.fileUploadService = fileUploadService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/v1/members")
@@ -35,6 +41,13 @@ public class MemberController {
     @PostMapping("/v1/members/profile-image")
     public ApiResult<FileUploadResponse> upload(@RequestParam("image") MultipartFile file) {
         return new SuccessfulResult(fileUploadService.restoreProfileImage(file));
+    }
+
+
+    @PostMapping("/v1/init-password")
+    public ApiResult initPassword(@RequestParam String emailAddress) throws Exception {
+        authenticationService.initPassword(emailAddress);
+        return new SuccessfulResult();
     }
 
 }

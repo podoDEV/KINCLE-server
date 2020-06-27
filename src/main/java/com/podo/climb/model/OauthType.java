@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum OauthType {
-    SELF(1), GOOGLE(2), APPLE(3);
+    SELF(1), GOOGLE(2), APPLE(3), KAKAO(4);
     private int value;
 
     OauthType(int value) {
