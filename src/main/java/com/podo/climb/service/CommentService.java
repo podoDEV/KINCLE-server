@@ -18,8 +18,8 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    private MemberService memberService;
-    private CommentRepository commentRepository;
+    private final MemberService memberService;
+    private final CommentRepository commentRepository;
 
     @Autowired
     CommentService(MemberService memberService,

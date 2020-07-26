@@ -19,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class MemberController {
 
-    private MemberService memberService;
-    private FileUploadService fileUploadService;
-    private AuthenticationService authenticationService;
+    private final MemberService memberService;
+    private final FileUploadService fileUploadService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
     MemberController(MemberService memberService,

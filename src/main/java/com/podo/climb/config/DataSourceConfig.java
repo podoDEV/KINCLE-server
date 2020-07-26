@@ -1,6 +1,9 @@
 package com.podo.climb.config;
 
+import com.podo.climb.secure.SecureDbConnection;
+import com.podo.climb.secure.SecureDbConnectionFactoryBean;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,33 +26,28 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "com.podo.climb.repository")
 @EnableTransactionManagement
 @Configuration
-@PropertySources({
-        @PropertySource(value = "file:/home/ec2-user/apps/climb-api/config/mysql.properties"),
-})
 public class DataSourceConfig {
 
-    @Value("${jdbc.url}")
-    private String jdbcUrl;
-
-    @Value("${jdbc.username}")
-    private String jdbcUser;
-
-    @Value("${jdbc.password}")
-    private String jdbcPassword;
+    @Bean
+    public SecureDbConnection secureDbConnection() {
+        SecureDbConnectionFactoryBean secureDbConnectionFactoryBean = new SecureDbConnectionFactoryBean();
+        return secureDbConnectionFactoryBean.getObject();
+    }
 
     @Bean
     @Primary
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(jdbcUser);
-        dataSource.setPassword(jdbcPassword);
+        dataSource.setDriverClassName(secureDbConnection().getJdbcDriverClassName());
+        dataSource.setUrl(secureDbConnection().getJdbcUrl());
+        dataSource.setUsername(secureDbConnection().getJdbcUser());
+        dataSource.setPassword(secureDbConnection().getJdbcPassword());
 
         return dataSource;
     }
 
     @Bean
+    @Primary
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);

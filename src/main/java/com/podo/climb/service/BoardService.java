@@ -21,10 +21,10 @@ import java.util.Calendar;
 @Service
 public class BoardService {
 
-    private MemberService memberService;
-    private CommentService commentService;
-    private BoardRepository boardRepository;
-    private MembersBoardLikeRepository membersBoardLikeRepository;
+    private final MemberService memberService;
+    private final CommentService commentService;
+    private final BoardRepository boardRepository;
+    private final MembersBoardLikeRepository membersBoardLikeRepository;
 
     @Autowired
     BoardService(MemberService memberService,

@@ -29,10 +29,10 @@ import javax.servlet.http.HttpSession;
 @Service
 public class AuthenticationService {
 
-    private AuthenticationManager authenticationManager;
-    private MemberService memberService;
-    private JavaMailSender javaMailSender;
-    private MemberRepository memberRepository;
+    private final AuthenticationManager authenticationManager;
+    private final MemberService memberService;
+    private final JavaMailSender javaMailSender;
+    private final MemberRepository memberRepository;
 
     @Autowired
     AuthenticationService(AuthenticationManager authenticationManager,
