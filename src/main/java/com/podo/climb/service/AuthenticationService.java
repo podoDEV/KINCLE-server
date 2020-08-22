@@ -55,7 +55,7 @@ public class AuthenticationService {
         } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
             return oauthSignIn(signInRequest, session);
         } else {
-            throw new ApiFailedException(400, "bad request");
+            throw new ApiFailedException(400, "Bad request");
         }
     }
 
@@ -64,7 +64,7 @@ public class AuthenticationService {
         String emailAddress = signInRequest.getEmailAddress();
         String password = signInRequest.getPassword();
 
-        Member member = Optional.ofNullable(memberRepository.findByEmailAddress(emailAddress)).orElseThrow(new ApiFailedException(400, "wrong email or password"));
+        Member member = Optional.ofNullable(memberRepository.findByEmailAddress(emailAddress)).orElseThrow(new ApiFailedException(400, "Wrong email or Password"));
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(emailAddress, password);
 

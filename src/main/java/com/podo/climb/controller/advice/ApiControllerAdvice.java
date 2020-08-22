@@ -32,6 +32,7 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler({HttpMessageNotReadableException.class, HttpRequestMethodNotSupportedException.class})
     public FailedResult<FailedResult.ErrorMessage> handleHBadRequestException(Exception ex) {
+        log.error("", ex);
         return new FailedResult<>(400, "Bad Request");
     }
 
