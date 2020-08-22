@@ -3,7 +3,10 @@ package com.podo.climb.controller.advice;
 import com.podo.climb.exception.ApiFailedException;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.FailedResult;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,23 +21,28 @@ import javax.servlet.http.HttpServletResponse;
 public class ApiControllerAdvice {
 
     @ExceptionHandler(ApiFailedException.class)
-    public ApiResult handleApiFailedException(ApiFailedException ex) {
-        return new FailedResult(ex.getCode(), ex.getMessage());
+    public FailedResult<FailedResult.ErrorMessage> handleApiFailedException(ApiFailedException ex) {
+        return new FailedResult<>(ex.getCode(), ex.getMessage());
     }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ApiResult handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        return new FailedResult(405, "Method Not Allowed");
+    @ExceptionHandler(BadCredentialsException.class)
+    public FailedResult<FailedResult.ErrorMessage> handleBadCredentialsException(Exception ex) {
+        return new FailedResult<>(400, "wrong email or password");
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, HttpRequestMethodNotSupportedException.class})
+    public FailedResult<FailedResult.ErrorMessage> handleHBadRequestException(Exception ex) {
+        return new FailedResult<>(400, "Bad Request");
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ApiResult handleNotFoundError(HttpServletResponse response, NoHandlerFoundException ex) {
-        return new FailedResult(404, "Not Found");
+    public FailedResult<FailedResult.ErrorMessage> handleNotFoundError(HttpServletResponse response, Exception ex) {
+        return new FailedResult<>(404, "Not Found");
     }
 
     @ExceptionHandler(Exception.class)
-    public ApiResult handleException(Exception ex) {
+    public FailedResult<FailedResult.ErrorMessage> handleException(Exception ex) {
         log.error("", ex);
-        return new FailedResult();
+        return new FailedResult<>();
     }
 }

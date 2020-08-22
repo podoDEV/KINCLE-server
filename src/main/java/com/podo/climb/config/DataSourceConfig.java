@@ -1,15 +1,12 @@
 package com.podo.climb.config;
 
-import com.podo.climb.secure.SecureDbConnection;
-import com.podo.climb.secure.SecureDbConnectionFactoryBean;
+import com.podo.climb.secure.SecureData;
+import com.podo.climb.secure.SecureDataFactoryBean;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -28,20 +25,21 @@ import java.util.Properties;
 @Configuration
 public class DataSourceConfig {
 
-    @Bean
-    public SecureDbConnection secureDbConnection() {
-        SecureDbConnectionFactoryBean secureDbConnectionFactoryBean = new SecureDbConnectionFactoryBean();
-        return secureDbConnectionFactoryBean.getObject();
+    private final SecureData secureData;
+
+    public DataSourceConfig(SecureData secureData) {
+        this.secureData = secureData;
     }
+
 
     @Bean
     @Primary
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(secureDbConnection().getJdbcDriverClassName());
-        dataSource.setUrl(secureDbConnection().getJdbcUrl());
-        dataSource.setUsername(secureDbConnection().getJdbcUser());
-        dataSource.setPassword(secureDbConnection().getJdbcPassword());
+        dataSource.setDriverClassName(secureData.getJdbcDriverClassName());
+        dataSource.setUrl(secureData.getJdbcUrl());
+        dataSource.setUsername(secureData.getJdbcUser());
+        dataSource.setPassword(secureData.getJdbcPassword());
 
         return dataSource;
     }

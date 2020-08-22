@@ -8,6 +8,7 @@ import com.podo.climb.model.AuthenticationToken;
 import com.podo.climb.model.OauthType;
 import com.podo.climb.model.request.SignInRequest;
 import com.podo.climb.repository.MemberRepository;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -53,7 +55,7 @@ public class AuthenticationService {
         } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
             return oauthSignIn(signInRequest, session);
         } else {
-            throw new RuntimeException();
+            throw new ApiFailedException(400, "bad request");
         }
     }
 
@@ -62,14 +64,14 @@ public class AuthenticationService {
         String emailAddress = signInRequest.getEmailAddress();
         String password = signInRequest.getPassword();
 
-        Member member = memberRepository.findByEmailAddress(emailAddress);
+        Member member = Optional.ofNullable(memberRepository.findByEmailAddress(emailAddress)).orElseThrow(new ApiFailedException(400, "wrong email or password"));
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(emailAddress, password);
 
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                             SecurityContextHolder.getContext());
+                SecurityContextHolder.getContext());
 
         return new AuthenticationToken(member.getNickname(), member.getMemberRole(), session.getId());
     }
@@ -85,13 +87,14 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                             SecurityContextHolder.getContext());
+                SecurityContextHolder.getContext());
 
         return new AuthenticationToken(member.getNickname(), member.getMemberRole(), session.getId());
     }
 
     public void initPassword(String emailAddress) throws Exception {
         Member member = memberService.findByEmailAddress(emailAddress);
+        //TODO: null 처리
         if (!OauthType.SELF.equals(member.getOauthType())) {
             throw new ApiFailedException(403, "only self member can change password");
         }
@@ -107,7 +110,7 @@ public class AuthenticationService {
         try {
             javaMailSender.send(msg);
         } catch (MailException ex) {
-            log.error("{}", ex);
+            log.error("", ex);
             throw new RuntimeException();
         }
     }

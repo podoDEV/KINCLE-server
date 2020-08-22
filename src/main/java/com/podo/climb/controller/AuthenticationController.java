@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class AuthenticationController {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
     AuthenticationController(AuthenticationService authenticationService) {

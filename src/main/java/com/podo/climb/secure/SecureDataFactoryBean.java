@@ -9,24 +9,24 @@ import java.io.File;
 import java.nio.file.Paths;
 
 @Slf4j
-public class SecureDbConnectionFactoryBean implements FactoryBean<SecureDbConnection> {
+public class SecureDataFactoryBean implements FactoryBean<SecureData> {
 
     @Override
-    public SecureDbConnection getObject() {
-        String jsonPath = System.getProperty("secure.db.json");
-        SecureDbConnection secureDbConnection = null;
+    public SecureData getObject() {
+        String jsonPath = System.getProperty("secure.json");
+        SecureData secureData = null;
         try {
             if (!StringUtils.isEmpty(jsonPath) && Paths.get(jsonPath).toFile().exists()) {
-                secureDbConnection = new ObjectMapper().readValue(new File(jsonPath), SecureDbConnection.class);
+                secureData = new ObjectMapper().readValue(new File(jsonPath), SecureData.class);
             }
         } catch (Exception exception) {
-            log.error("-Dsecure.db.json", exception);
+            log.error("-Dsecure.json", exception);
         }
-        return secureDbConnection;
+        return secureData;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return SecureDbConnection.class;
+        return SecureData.class;
     }
 }

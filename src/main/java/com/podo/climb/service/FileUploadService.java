@@ -1,7 +1,9 @@
 package com.podo.climb.service;
 
 import com.podo.climb.model.response.FileUploadResponse;
+import com.podo.climb.secure.SecureData;
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,18 +18,18 @@ import java.util.Calendar;
 @Service
 public class FileUploadService {
 
-    @Value("${file.path}")
-    private String filePath;
 
-    @Value("${profile.file.path}")
-    private String profileFilePath;
-
+    private final SecureData secureData;
     private static final String prefixUrl = "/img/";
 
     @Value("${thumbnail.width}")
     private int thumbNailWidth;
     @Value("${thumbnail.height}")
     private int thumbNailHeight;
+
+    public FileUploadService(SecureData secureData) {
+        this.secureData = secureData;
+    }
 
     public FileUploadResponse restoreProfileImage(MultipartFile multipartFile) {
         try (InputStream in = multipartFile.getInputStream()) {
@@ -37,7 +39,7 @@ public class FileUploadService {
                     = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
             String saveFileName = genSaveFileName(extName);
 
-            try (FileOutputStream fos = new FileOutputStream(filePath + saveFileName)) {
+            try (FileOutputStream fos = new FileOutputStream(secureData.getFilePath() + saveFileName)) {
                 Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
                 fos.close();
                 String url = prefixUrl + saveFileName;
@@ -91,7 +93,7 @@ public class FileUploadService {
             throws IOException {
         boolean result = false;
         byte[] data = multipartFile.getBytes();
-        try (FileOutputStream fos = new FileOutputStream(filePath + saveFileName)) {
+        try (FileOutputStream fos = new FileOutputStream(secureData.getFilePath() + saveFileName)) {
             fos.write(data);
         }
         return result;

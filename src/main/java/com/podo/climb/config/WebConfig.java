@@ -1,6 +1,7 @@
 package com.podo.climb.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.podo.climb.secure.SecureData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +19,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan("com.podo.climb")
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${file.path}")
-    private String filePath;
+    private final SecureData secureData;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    public WebConfig(SecureData secureData) {
+        this.secureData = secureData;
+    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -52,7 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("/WEB-INF/resources/");
 
         registry.addResourceHandler("/img/**")
-                .addResourceLocations("file://" + filePath);
+                .addResourceLocations("file://" + secureData.getFilePath());
 
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");

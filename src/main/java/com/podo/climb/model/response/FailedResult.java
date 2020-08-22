@@ -10,7 +10,7 @@ public class FailedResult<T> extends ApiResult<T> {
 
     public FailedResult() {
         super(500);
-        this.data = (T) new ErrorMessage("서버 오류가 발생했습니다.");
+        this.data = (T) new ErrorMessage("server error");
     }
 
     public FailedResult(Integer code, String message) {
@@ -18,7 +18,7 @@ public class FailedResult<T> extends ApiResult<T> {
         this.data = (T) new ErrorMessage(message);
     }
 
-    class ErrorMessage {
+    public static class ErrorMessage {
         @JsonProperty
         String message;
 

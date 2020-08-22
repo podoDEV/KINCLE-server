@@ -34,20 +34,20 @@ public class MemberController {
 
     @PostMapping("/v1/members")
     public ApiResult<Member> createMember(@RequestBody CreateMemberRequest createMemberRequest) {
-        return new SuccessfulResult(memberService.createMember(createMemberRequest));
+        return new SuccessfulResult<>(memberService.createMember(createMemberRequest));
     }
 
     @ApiOperation(value = "프로필 이미지 업로드, 썸네일 처리")
     @PostMapping("/v1/members/profile-image")
     public ApiResult<FileUploadResponse> upload(@RequestParam("image") MultipartFile file) {
-        return new SuccessfulResult(fileUploadService.restoreProfileImage(file));
+        return new SuccessfulResult<>(fileUploadService.restoreProfileImage(file));
     }
 
 
     @PostMapping("/v1/init-password")
     public ApiResult initPassword(@RequestParam String emailAddress) throws Exception {
         authenticationService.initPassword(emailAddress);
-        return new SuccessfulResult();
+        return new SuccessfulResult<>();
     }
 
 }

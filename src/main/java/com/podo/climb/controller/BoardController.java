@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BoardController {
 
-    private BoardService boardService;
+    private final BoardService boardService;
 
     @Autowired
     BoardController(BoardService boardService) {
