@@ -2,7 +2,9 @@ package com.podo.climb.model.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
+@Getter
 public abstract class ApiResult<T> {
 
     @JsonProperty

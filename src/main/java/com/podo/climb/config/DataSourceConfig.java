@@ -73,9 +73,9 @@ public class DataSourceConfig {
 
     private Properties jpaProperties() {
         Properties jpaProperties = new Properties();
-        jpaProperties.setProperty("hibernate.show_sql", "true");
+        jpaProperties.setProperty("hibernate.show_sql", "false");
         jpaProperties.setProperty("hibernate.format_sql", "true");
-        jpaProperties.setProperty("hibernate.use_sql_comments", "true");
+        jpaProperties.setProperty("hibernate.use_sql_comments", "false");
         jpaProperties.setProperty("hibernate.globally_quoted_identifiers", "true");
         jpaProperties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
