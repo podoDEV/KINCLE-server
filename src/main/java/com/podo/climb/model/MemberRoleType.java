@@ -2,13 +2,14 @@ package com.podo.climb.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public enum MemberRoleType {
     ADMIN(1), MEMBER(2);
-    private int value;
+    private final int value;
 
     MemberRoleType(int value) {
         this.value = value;

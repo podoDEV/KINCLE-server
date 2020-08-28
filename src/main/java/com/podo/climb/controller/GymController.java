@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 public class GymController {
 
-    private GymService gymService;
+    private final GymService gymService;
 
     @Autowired
     GymController(GymService gymService) {

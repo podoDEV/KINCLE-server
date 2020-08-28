@@ -20,7 +20,7 @@ import java.util.Collections;
 @Service
 public class MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     MemberService(MemberRepository memberRepository) {
@@ -35,7 +35,7 @@ public class MemberService {
         } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
             return createOauthMember(createMemberRequest);
         } else {
-            throw new ApiFailedException(400, "제공하지 않는 로그인 타입입니다.");
+            throw new ApiFailedException(400, "Login Type not supported");
         }
     }
 

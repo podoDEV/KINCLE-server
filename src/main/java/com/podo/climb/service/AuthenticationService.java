@@ -71,7 +71,7 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+                             SecurityContextHolder.getContext());
 
         return new AuthenticationToken(member.getNickname(), member.getMemberRole(), session.getId());
     }
@@ -87,16 +87,16 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+                             SecurityContextHolder.getContext());
 
         return new AuthenticationToken(member.getNickname(), member.getMemberRole(), session.getId());
     }
 
     public void initPassword(String emailAddress) throws Exception {
         Member member = memberService.findByEmailAddress(emailAddress);
-        //TODO: null 처리
-        if (!OauthType.SELF.equals(member.getOauthType())) {
-            throw new ApiFailedException(403, "only self member can change password");
+
+        if (member == null || !OauthType.SELF.equals(member.getOauthType())) {
+            throw new ApiFailedException(403, "Only self member can change password");
         }
 
         SimpleMailMessage msg = new SimpleMailMessage();

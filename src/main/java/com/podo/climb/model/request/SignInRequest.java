@@ -15,8 +15,8 @@ public class SignInRequest {
     String emailAddress;
     @ApiModelProperty(value = "자체 로그인이 아닐 경우 생략")
     String password;
-    @ApiModelProperty(value = "자체 로그인일 경우 생략. self, google, apple, kakao")
+    @ApiModelProperty(value = "자체 로그인일 경우 생략")
     String token;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = true, value = "self, google, apple, kakao")
     OauthType oauthType;
 }

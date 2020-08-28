@@ -19,10 +19,14 @@ import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired(required = false)
-    private CustomUserDetailsService customUserDetailsService;
+    
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -50,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.
-                    authenticationProvider(authenticationProvider());
+                authenticationProvider(authenticationProvider());
     }
 
     @Bean

@@ -22,6 +22,6 @@ public class FileUploadController {
     //TODO: 성능을 위해 stream 으로 변경
     @PostMapping("/upload")
     public ApiResult<FileUploadResponse> upload(@RequestParam("image") MultipartFile file) {
-        return new SuccessfulResult(fileUploadService.restore(file));
+        return new SuccessfulResult<>(fileUploadService.restore(file));
     }
 }

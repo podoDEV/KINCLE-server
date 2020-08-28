@@ -21,16 +21,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "MembersBoardLikes")
-public class MembersBoardLike {
+@Table(name = "MembersBoards")
+public class MembersBoard {
     @Id
-    @Column(name = "members_board_like_id")
-    private Long memberFavoriteId;
+    @Column(name = "members_board_id")
+    private Long memberBoardId;
 
     @Column(name = "member_id")
     private Long memberId;
 
     @Column(name = "board_id")
     private Long boardId;
+
+    @Column(name = "like_flag")
+    private Boolean likeFlag;
+
+    @Column(name = "solve_flag")
+    private Boolean solveFlag;
+
+    @Column(name = "follow_flag")
+    private Boolean followFlag;
+
+    @Column(name = "score")
+    private Float score;
 
 }

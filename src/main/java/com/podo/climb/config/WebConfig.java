@@ -1,12 +1,15 @@
 package com.podo.climb.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.podo.climb.entity.converter.BoardFilterTypeConverter;
+import com.podo.climb.entity.converter.MembersBoardFlagTypeConverter;
 import com.podo.climb.secure.SecureData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -29,6 +32,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login/form").setViewName("loginForm");
         registry.addViewController("/upload/form").setViewName("uploadForm");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new BoardFilterTypeConverter());
+        registry.addConverter(new MembersBoardFlagTypeConverter());
     }
 
     @Bean

@@ -1,9 +1,7 @@
 package com.podo.climb.controller.advice;
 
 import com.podo.climb.exception.ApiFailedException;
-import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.FailedResult;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,7 +25,7 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(BadCredentialsException.class)
     public FailedResult<FailedResult.ErrorMessage> handleBadCredentialsException(Exception ex) {
-        return new FailedResult<>(400, "wrong email or password");
+        return new FailedResult<>(400, "Wrong email or password");
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, HttpRequestMethodNotSupportedException.class})

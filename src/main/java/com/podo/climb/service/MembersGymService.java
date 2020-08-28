@@ -16,11 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class MembersGymService {
 
-    private MemberService memberService;
-    private GymRepository gymRepository;
-    private MembersGymRepository membersGymRepository;
-
-
+    private final MemberService memberService;
+    private final GymRepository gymRepository;
+    private final MembersGymRepository membersGymRepository;
+    
     MembersGymService(MemberService memberService,
                       GymRepository gymRepository,
                       MembersGymRepository membersGymRepository) {

@@ -7,23 +7,23 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.Objects;
 
-public enum OauthType {
-    SELF(1), GOOGLE(2), APPLE(3), KAKAO(4);
+public enum BoardFilterType {
+    REGISTER(1), LIKE(2), SOLVE(3), FOLLOW(4);
     private final int value;
 
-    OauthType(int value) {
+    BoardFilterType(int value) {
         this.value = value;
     }
 
-    public static OauthType valueOf(Integer n) {
-        return Arrays.stream(OauthType.values())
+    public static BoardFilterType valueOf(Integer n) {
+        return Arrays.stream(BoardFilterType.values())
                      .filter(t -> Objects.equals(t.value, n))
                      .findAny().orElse(null);
     }
 
     @JsonCreator
-    public static OauthType forJsonValue(String value) {
-        return OauthType.valueOf(value.toUpperCase());
+    public static BoardFilterType forJsonValue(String value) {
+        return BoardFilterType.valueOf(value.toUpperCase());
     }
 
     @JsonValue

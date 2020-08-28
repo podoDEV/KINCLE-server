@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @GetMapping("/v1/comments/{commentId}")
-    public ApiResult<CommentResponse> getComment(@PathVariable Long commentId, Pageable pageable) {
+    public ApiResult<CommentResponse> getComment(@PathVariable Long commentId) {
         return new SuccessfulResult<>(commentService.getComment(commentId));
     }
 

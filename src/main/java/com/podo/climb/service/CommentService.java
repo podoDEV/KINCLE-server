@@ -55,8 +55,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteBoard() {
-
+    public void deleteComments(Long boardId) {
+        commentRepository.deleteAllByBoardId(boardId);
     }
 
 }

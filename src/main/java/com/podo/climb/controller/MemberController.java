@@ -45,7 +45,7 @@ public class MemberController {
 
 
     @PostMapping("/v1/init-password")
-    public ApiResult initPassword(@RequestParam String emailAddress) throws Exception {
+    public ApiResult<?> initPassword(@RequestParam String emailAddress) throws Exception {
         authenticationService.initPassword(emailAddress);
         return new SuccessfulResult<>();
     }

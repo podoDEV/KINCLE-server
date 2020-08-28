@@ -13,10 +13,10 @@ public class AuthenticationToken {
     @JsonIgnore
     private String username;
     @JsonIgnore
-    private Collection authorities;
+    private Collection<?> authorities;
     private String token;
 
-    public AuthenticationToken(String username, Collection collection, String token) {
+    public AuthenticationToken(String username, Collection<?> collection, String token) {
         this.username = username;
         this.authorities = collection;
         this.token = token;

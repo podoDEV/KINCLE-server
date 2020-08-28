@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 public class MembersGymController {
 
-    private MembersGymService membersGymService;
+    private final MembersGymService membersGymService;
 
     @Autowired
     MembersGymController(MembersGymService membersGymService) {
@@ -27,16 +27,16 @@ public class MembersGymController {
 
     @ApiOperation(value = "즐겨찾는 암장 등록")
     @PostMapping("/v1/members/gyms")
-    public ApiResult createMembersGym(@RequestBody MembersGymRequest membersGymRequest) {
+    public ApiResult<?> createMembersGym(@RequestBody MembersGymRequest membersGymRequest) {
         membersGymService.createMembersGym(membersGymRequest);
-        return new SuccessfulResult();
+        return new SuccessfulResult<>();
     }
 
     @ApiOperation(value = "즐겨찾는 암장 삭제")
     @DeleteMapping("/v1/members/gyms")
-    public ApiResult deleteMembersGym(@RequestBody MembersGymRequest membersGymRequest) {
+    public ApiResult<?> deleteMembersGym(@RequestBody MembersGymRequest membersGymRequest) {
         membersGymService.deleteMembersGym(membersGymRequest);
-        return new SuccessfulResult();
+        return new SuccessfulResult<>();
     }
 
     @ApiOperation(value = "현재 사용자의 즐겨찾는 암장 모두 조회")
