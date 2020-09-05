@@ -6,7 +6,9 @@ import com.podo.climb.model.request.SignInRequest;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.AuthenticationService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
+@Api(tags = {"로그인, 로그아웃 API"})
 @RestController
 public class AuthenticationController {
 
@@ -36,20 +39,20 @@ public class AuthenticationController {
     public ApiResult<AuthenticationToken> signIn(
             @RequestBody SignInRequest signInRequest,
             @ApiIgnore HttpSession session) {
-        return new SuccessfulResult(authenticationService.signIn(signInRequest, session));
+        return new SuccessfulResult<>(authenticationService.signIn(signInRequest, session));
     }
 
     @ApiOperation(value = "로그아웃")
     @GetMapping(value = "/v1/signout")
-    public ApiResult signOut(HttpServletRequest request,
-                             HttpServletResponse response) {
+    public ApiResult<?> signOut(HttpServletRequest request,
+                                HttpServletResponse response) {
         authenticationService.signOut(request, response);
-        return new SuccessfulResult();
+        return new SuccessfulResult<>();
     }
 
     @PutMapping(value = "/v1/password")
-    public ApiResult changePassword(ChangePasswordRequest changePasswordRequest) {
+    public ApiResult<?> changePassword(ChangePasswordRequest changePasswordRequest) {
         authenticationService.changePassword(changePasswordRequest.getPassword());
-        return new SuccessfulResult();
+        return new SuccessfulResult<>();
     }
 }
