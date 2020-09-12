@@ -1,13 +1,8 @@
 package com.podo.climb.service;
 
-import com.podo.climb.Utils.IdGenerator;
-import com.podo.climb.encoder.Sha256PasswordEncoder;
 import com.podo.climb.entity.Member;
-import com.podo.climb.entity.MemberRole;
-import com.podo.climb.exception.ApiFailedException;
-import com.podo.climb.model.MemberRoleType;
-import com.podo.climb.model.OauthType;
-import com.podo.climb.model.request.CreateMemberRequest;
+import com.podo.climb.exception.ResourceNotFoundException;
+import com.podo.climb.model.request.MemberRequest;
 import com.podo.climb.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -27,9 +22,24 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+
     @Transactional
-    public Member createMember(CreateMemberRequest createMemberRequest) {
-        Member member = new Member(createMemberRequest);
+    public Member getMember(Long memberId) {
+        return Optional.ofNullable(memberRepository.findByMemberId(memberId)).orElseThrow(ResourceNotFoundException::new);
+    }
+
+
+    @Transactional
+    public Member createMember(MemberRequest memberRequest) {
+        Member member = new Member(memberRequest);
+        memberRepository.saveAndFlush(member);
+        return member;
+    }
+
+    @Transactional
+    public Member updateMember(Long memberId, MemberRequest memberRequest) {
+        Member member = Optional.ofNullable(memberRepository.findByMemberId(memberId)).orElseThrow(ResourceNotFoundException::new);
+        member.updateMember(memberRequest);
         memberRepository.saveAndFlush(member);
         return member;
     }

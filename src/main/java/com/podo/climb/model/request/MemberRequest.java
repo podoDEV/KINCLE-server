@@ -6,11 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateMemberRequest {
+public class MemberRequest {
     String nickname;
     String emailAddress;
     String password;
     String token;
+    String profileImageUrl;
     Integer level;
     OauthType oauthType;
 }

@@ -1,12 +1,13 @@
 package com.podo.climb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.podo.climb.Utils.IdGenerator;
 import com.podo.climb.encoder.Sha256PasswordEncoder;
 import com.podo.climb.entity.converter.OauthTypeConverter;
 import com.podo.climb.exception.ApiFailedException;
 import com.podo.climb.model.MemberRoleType;
 import com.podo.climb.model.OauthType;
-import com.podo.climb.model.request.CreateMemberRequest;
+import com.podo.climb.model.request.MemberRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -64,15 +66,16 @@ public class Member {
     @JoinColumn(name = "member_id")
     private List<MemberRole> memberRole;
 
-    public Member(CreateMemberRequest createMemberRequest) {
+    public Member(MemberRequest memberRequest) {
         Long memberId = IdGenerator.generate();
         Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
         Member member = Member.builder()
                               .memberId(memberId)
-                              .nickname(createMemberRequest.getNickname())
-                              .password(sha256PasswordEncoder.encode(createMemberRequest.getPassword()))
-                              .emailAddress(createMemberRequest.getEmailAddress())
-                              .oauthType(createMemberRequest.getOauthType())
+                              .nickname(memberRequest.getNickname())
+                              .password(sha256PasswordEncoder.encode(memberRequest.getPassword()))
+                              .emailAddress(memberRequest.getEmailAddress())
+                              .profileImageUrl(memberRequest.getProfileImageUrl())
+                              .oauthType(memberRequest.getOauthType())
                               .build();
         MemberRole memberRole = MemberRole.builder()
                                           .memberId(memberId)
@@ -81,12 +84,30 @@ public class Member {
 
         member.setMemberRole(Collections.singletonList(memberRole));
         if (OauthType.SELF.equals(oauthType)) {
-            member.setPassword(createMemberRequest.getPassword());
+            member.setPassword(memberRequest.getPassword());
         } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
-            member.setPassword(sha256PasswordEncoder.encode(createMemberRequest.getToken()));
+            member.setPassword(sha256PasswordEncoder.encode(memberRequest.getToken()));
         } else {
             throw new ApiFailedException(400, "Login Type not supported");
         }
     }
 
+
+    public void updateMember(MemberRequest memberRequest) {
+        if (memberRequest.getNickname() != null) {
+            this.nickname = memberRequest.getNickname();
+        }
+
+        if (memberRequest.getEmailAddress() != null) {
+            this.emailAddress = memberRequest.getEmailAddress();
+        }
+
+        if (memberRequest.getProfileImageUrl() != null) {
+            this.emailAddress = memberRequest.getProfileImageUrl();
+        }
+
+        if (memberRequest.getLevel() != null) {
+            this.level = memberRequest.getLevel();
+        }
+    }
 }
