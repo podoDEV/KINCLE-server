@@ -22,5 +22,6 @@ public class SecureData {
     private String mailUser;
     private String mailPassword;
 
+    private String server;
 
 }

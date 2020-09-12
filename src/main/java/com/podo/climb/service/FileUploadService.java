@@ -43,8 +43,7 @@ public class FileUploadService {
             try (FileOutputStream fos = new FileOutputStream(secureData.getFilePath() + saveFileName)) {
                 Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
                 fos.close();
-                String server = InetAddress.getLocalHost().getHostAddress() + ":8080";
-                String url = server + prefixUrl + saveFileName;
+                String url = secureData.getServer() + prefixUrl + saveFileName;
                 return new FileUploadResponse(url);
             }
         } catch (IOException io) {
@@ -64,8 +63,7 @@ public class FileUploadService {
             String saveFileName = genSaveFileName(extName);
 
             writeFile(multipartFile, saveFileName);
-            String server = InetAddress.getLocalHost().getHostAddress() + ":8080";
-            url = server + prefixUrl + saveFileName;
+            url = secureData.getServer() + prefixUrl + saveFileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
