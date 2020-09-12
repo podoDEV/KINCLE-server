@@ -29,58 +29,11 @@ public class MemberService {
 
     @Transactional
     public Member createMember(CreateMemberRequest createMemberRequest) {
-        OauthType oauthType = createMemberRequest.getOauthType();
-        if (OauthType.SELF.equals(oauthType)) {
-            return createSelfMember(createMemberRequest);
-        } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
-            return createOauthMember(createMemberRequest);
-        } else {
-            throw new ApiFailedException(400, "Login Type not supported");
-        }
-    }
-
-    private Member createSelfMember(CreateMemberRequest createMemberRequest) {
-        Long memberId = IdGenerator.generate();
-        Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
-        Member member = Member.builder()
-                              .memberId(memberId)
-                              .nickname(createMemberRequest.getNickname())
-                              .password(sha256PasswordEncoder.encode(createMemberRequest.getPassword()))
-                              .emailAddress(createMemberRequest.getEmailAddress())
-                              .oauthType(createMemberRequest.getOauthType())
-                              .build();
-
-        MemberRole memberRole = MemberRole.builder()
-                                          .memberId(memberId)
-                                          .role(MemberRoleType.MEMBER)
-                                          .build();
-
-        member.setMemberRole(Collections.singletonList(memberRole));
+        Member member = new Member(createMemberRequest);
         memberRepository.saveAndFlush(member);
         return member;
     }
 
-    private Member createOauthMember(CreateMemberRequest createMemberRequest) {
-        Long memberId = IdGenerator.generate();
-        Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
-        Member member = Member.builder()
-                              .memberId(memberId)
-                              .nickname(createMemberRequest.getNickname())
-                              .password(sha256PasswordEncoder.encode(createMemberRequest.getToken()))
-                              .emailAddress(createMemberRequest.getEmailAddress())
-                              .token(createMemberRequest.getToken())
-                              .oauthType(createMemberRequest.getOauthType())
-                              .build();
-
-        MemberRole memberRole = MemberRole.builder()
-                                          .memberId(memberId)
-                                          .role(MemberRoleType.MEMBER)
-                                          .build();
-
-        member.setMemberRole(Collections.singletonList(memberRole));
-        memberRepository.saveAndFlush(member);
-        return member;
-    }
 
     public Member findByEmailAddress(String emailAddress) {
         return memberRepository.findByEmailAddress(emailAddress);

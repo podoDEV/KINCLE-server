@@ -11,5 +11,6 @@ public class CreateMemberRequest {
     String emailAddress;
     String password;
     String token;
+    Integer level;
     OauthType oauthType;
 }

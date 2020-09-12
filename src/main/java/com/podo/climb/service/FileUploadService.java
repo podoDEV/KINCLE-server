@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Calendar;
 
 @Service
@@ -42,7 +43,8 @@ public class FileUploadService {
             try (FileOutputStream fos = new FileOutputStream(secureData.getFilePath() + saveFileName)) {
                 Thumbnails.of(originalImage).size(thumbNailWidth, thumbNailHeight).outputFormat("png").toOutputStream(fos);
                 fos.close();
-                String url = prefixUrl + saveFileName;
+                String server = InetAddress.getLocalHost().getHostAddress() + ":8080";
+                String url = server + prefixUrl + saveFileName;
                 return new FileUploadResponse(url);
             }
         } catch (IOException io) {
@@ -62,7 +64,8 @@ public class FileUploadService {
             String saveFileName = genSaveFileName(extName);
 
             writeFile(multipartFile, saveFileName);
-            url = prefixUrl + saveFileName;
+            String server = InetAddress.getLocalHost().getHostAddress() + ":8080";
+            url = server + prefixUrl + saveFileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
