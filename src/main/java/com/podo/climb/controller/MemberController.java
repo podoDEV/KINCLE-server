@@ -2,12 +2,14 @@ package com.podo.climb.controller;
 
 import com.podo.climb.entity.Member;
 import com.podo.climb.model.request.MemberRequest;
+import com.podo.climb.model.request.MembersGymRequest;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.FileUploadResponse;
 import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.AuthenticationService;
 import com.podo.climb.service.FileUploadService;
 import com.podo.climb.service.MemberService;
+import com.podo.climb.service.MembersGymService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +25,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MembersGymService membersGymService;
     private final FileUploadService fileUploadService;
     private final AuthenticationService authenticationService;
 
     @Autowired
     MemberController(MemberService memberService,
-                     FileUploadService fileUploadService,
+                     MembersGymService membersGymService, FileUploadService fileUploadService,
                      AuthenticationService authenticationService) {
         this.memberService = memberService;
+        this.membersGymService = membersGymService;
         this.fileUploadService = fileUploadService;
         this.authenticationService = authenticationService;
     }
@@ -49,7 +53,11 @@ public class MemberController {
 
     @PostMapping("/v1/members")
     public ApiResult<Member> createMember(@RequestBody MemberRequest memberRequest) {
-        return new SuccessfulResult<>(memberService.createMember(memberRequest));
+        Member member = memberService.createMember(memberRequest);
+        if (memberRequest.getGymIds() != null) {
+            memberRequest.getGymIds().forEach(gymId -> membersGymService.createMembersGym(member, new MembersGymRequest(gymId)));
+        }
+        return new SuccessfulResult<>(member);
     }
 
     @ApiOperation(value = "비밀번호, oauth 정보 수정 불가")

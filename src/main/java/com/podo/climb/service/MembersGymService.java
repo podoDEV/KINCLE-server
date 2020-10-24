@@ -19,7 +19,7 @@ public class MembersGymService {
     private final MemberService memberService;
     private final GymRepository gymRepository;
     private final MembersGymRepository membersGymRepository;
-    
+
     MembersGymService(MemberService memberService,
                       GymRepository gymRepository,
                       MembersGymRepository membersGymRepository) {
@@ -39,22 +39,28 @@ public class MembersGymService {
     }
 
     @Transactional
-    public void createMembersGym(MembersGymRequest memberFavoriteRequest) {
+    public void createMembersGym(MembersGymRequest membersGymRequest) {
         Member member = memberService.getCurrentMember();
-        if (membersGymRepository.findByMemberIdAndGymId(member.getMemberId(), memberFavoriteRequest.getGymId()) == null) {
+        this.createMembersGym(member, membersGymRequest);
+
+    }
+
+    @Transactional
+    public void createMembersGym(Member member, MembersGymRequest membersGymRequest) {
+        if (membersGymRepository.findByMemberIdAndGymId(member.getMemberId(), membersGymRequest.getGymId()) == null) {
             MembersGym memberFavorite = MembersGym.builder()
                                                   .membersGymId(IdGenerator.generate())
                                                   .memberId(member.getMemberId())
-                                                  .gymId(memberFavoriteRequest.getGymId())
+                                                  .gymId(membersGymRequest.getGymId())
                                                   .build();
             membersGymRepository.save(memberFavorite);
         }
     }
 
     @Transactional
-    public void deleteMembersGym(MembersGymRequest memberFavoriteRequest) {
+    public void deleteMembersGym(MembersGymRequest membersGymRequest) {
         Member member = memberService.getCurrentMember();
-        membersGymRepository.deleteByMemberIdAndAndGymId(member.getMemberId(), memberFavoriteRequest.getGymId());
+        membersGymRepository.deleteByMemberIdAndAndGymId(member.getMemberId(), membersGymRequest.getGymId());
 
     }
 

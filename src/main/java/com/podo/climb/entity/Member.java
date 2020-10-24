@@ -69,27 +69,32 @@ public class Member {
     public Member(MemberRequest memberRequest) {
         Long memberId = IdGenerator.generate();
         Sha256PasswordEncoder sha256PasswordEncoder = new Sha256PasswordEncoder();
-        Member member = Member.builder()
-                              .memberId(memberId)
-                              .nickname(memberRequest.getNickname())
-                              .password(sha256PasswordEncoder.encode(memberRequest.getPassword()))
-                              .emailAddress(memberRequest.getEmailAddress())
-                              .profileImageUrl(memberRequest.getProfileImageUrl())
-                              .oauthType(memberRequest.getOauthType())
-                              .build();
+
+        this.memberId = IdGenerator.generate();
+        this.nickname = memberRequest.getNickname();
+        this.emailAddress = memberRequest.getEmailAddress();
+        this.profileImageUrl = memberRequest.getProfileImageUrl();
+        this.oauthType = memberRequest.getOauthType();
+
         MemberRole memberRole = MemberRole.builder()
                                           .memberId(memberId)
                                           .role(MemberRoleType.MEMBER)
                                           .build();
+        this.memberRole = Collections.singletonList(memberRole);
 
-        member.setMemberRole(Collections.singletonList(memberRole));
-        if (OauthType.SELF.equals(oauthType)) {
-            member.setPassword(memberRequest.getPassword());
-        } else if (OauthType.GOOGLE.equals(oauthType) || OauthType.APPLE.equals(oauthType)) {
-            member.setPassword(sha256PasswordEncoder.encode(memberRequest.getToken()));
-        } else {
-            throw new ApiFailedException(400, "Login Type not supported");
+        switch (memberRequest.getOauthType()) {
+            case SELF:
+                this.password = sha256PasswordEncoder.encode(memberRequest.getPassword());
+                break;
+            case APPLE:
+            case KAKAO:
+            case GOOGLE:
+                this.password = sha256PasswordEncoder.encode(memberRequest.getToken());
+                break;
+            default:
+                throw new ApiFailedException(400, "Login Type not supported");
         }
+
     }
 
 

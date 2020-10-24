@@ -32,8 +32,7 @@ public class MemberService {
     @Transactional
     public Member createMember(MemberRequest memberRequest) {
         Member member = new Member(memberRequest);
-        memberRepository.saveAndFlush(member);
-        return member;
+        return memberRepository.saveAndFlush(member);
     }
 
     @Transactional
