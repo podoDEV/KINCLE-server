@@ -1,17 +1,21 @@
 package com.podo.climb.controller;
 
 import com.podo.climb.entity.Member;
+import com.podo.climb.model.AuthenticationToken;
 import com.podo.climb.model.request.MemberRequest;
 import com.podo.climb.model.request.MembersGymRequest;
+import com.podo.climb.model.request.SignInRequest;
 import com.podo.climb.model.response.ApiResult;
 import com.podo.climb.model.response.FileUploadResponse;
+import com.podo.climb.model.response.MemberDetailResponse;
+import com.podo.climb.model.response.MemberResponse;
 import com.podo.climb.model.response.SuccessfulResult;
 import com.podo.climb.service.AuthenticationService;
 import com.podo.climb.service.FileUploadService;
 import com.podo.climb.service.MemberService;
 import com.podo.climb.service.MembersGymService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpSession;
+
+@RequiredArgsConstructor
 @RestController
 public class MemberController {
 
@@ -29,35 +37,36 @@ public class MemberController {
     private final FileUploadService fileUploadService;
     private final AuthenticationService authenticationService;
 
-    @Autowired
-    MemberController(MemberService memberService,
-                     MembersGymService membersGymService, FileUploadService fileUploadService,
-                     AuthenticationService authenticationService) {
-        this.memberService = memberService;
-        this.membersGymService = membersGymService;
-        this.fileUploadService = fileUploadService;
-        this.authenticationService = authenticationService;
-    }
 
     @ApiOperation(value = "세션 사용자 정보")
     @GetMapping("/v1/members/me")
-    public ApiResult<Member> getMember() {
-        return new SuccessfulResult<>(memberService.getCurrentMember());
+    public ApiResult<MemberDetailResponse> getMember() {
+        Member member = memberService.getCurrentMember();
+        return new SuccessfulResult<>(memberService.getMemberDetail(member.getMemberId()));
     }
 
+
     @GetMapping("/v1/members/{memberId}")
-    public ApiResult<Member> getMember(@PathVariable Long memberId) {
-        return new SuccessfulResult<>(memberService.getMember(memberId));
+    public ApiResult<MemberDetailResponse> getMember(@PathVariable Long memberId) {
+        return new SuccessfulResult<>(memberService.getMemberDetail(memberId));
     }
 
 
     @PostMapping("/v1/members")
-    public ApiResult<Member> createMember(@RequestBody MemberRequest memberRequest) {
+    public ApiResult<MemberResponse> createMember(@RequestBody MemberRequest memberRequest,
+                                                  @ApiIgnore HttpSession session) {
         Member member = memberService.createMember(memberRequest);
+        SignInRequest signInRequest = SignInRequest.builder()
+                                                   .emailAddress(memberRequest.getEmailAddress())
+                                                   .oauthType(memberRequest.getOauthType())
+                                                   .password(memberRequest.getPassword())
+                                                   .token(memberRequest.getToken())
+                                                   .build();
+        AuthenticationToken authenticationToken = authenticationService.signIn(signInRequest, session);
         if (memberRequest.getGymIds() != null) {
             memberRequest.getGymIds().forEach(gymId -> membersGymService.createMembersGym(member, new MembersGymRequest(gymId)));
         }
-        return new SuccessfulResult<>(member);
+        return new SuccessfulResult<>(new MemberResponse(member, authenticationToken.getToken()));
     }
 
     @ApiOperation(value = "비밀번호, oauth 정보 수정 불가")

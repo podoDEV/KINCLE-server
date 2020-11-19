@@ -55,6 +55,7 @@ public class Member {
     @Column(name = "level")
     private Integer level;
 
+    @JsonIgnore
     @Column(name = "token")
     private String token;
 

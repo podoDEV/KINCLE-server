@@ -1,27 +1,34 @@
 package com.podo.climb.service;
 
+import com.podo.climb.entity.Gym;
 import com.podo.climb.entity.Member;
+import com.podo.climb.entity.MembersBoard;
+import com.podo.climb.entity.MembersGym;
 import com.podo.climb.exception.ResourceNotFoundException;
 import com.podo.climb.model.request.MemberRequest;
+import com.podo.climb.model.response.MemberDetailResponse;
+import com.podo.climb.repository.GymRepository;
 import com.podo.climb.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.podo.climb.repository.MembersBoardRepository;
+import com.podo.climb.repository.MembersGymRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
-    @Autowired
-    MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
+    private final MembersGymRepository membersGymRepository;
+    private final MembersBoardRepository membersBoardRepository;
+    private final GymRepository gymRepository;
 
     @Transactional
     public Member getMember(Long memberId) {
@@ -41,6 +48,19 @@ public class MemberService {
         member.updateMember(memberRequest);
         memberRepository.saveAndFlush(member);
         return member;
+    }
+
+    @Transactional
+    public MemberDetailResponse getMemberDetail(Long memberId) {
+        Member member = this.getMember(memberId);
+        List<Long> gymIds = membersGymRepository.findByMemberId(member.getMemberId())
+                                                .stream()
+                                                .map(MembersGym::getGymId)
+                                                .collect(Collectors.toList());
+        List<Gym> gyms = gymRepository.findByGymIdIn(gymIds);
+        List<MembersBoard> membersBoards = membersBoardRepository.findByMemberId(memberId);
+        return new MemberDetailResponse(member, gyms, membersBoards);
+
     }
 
 

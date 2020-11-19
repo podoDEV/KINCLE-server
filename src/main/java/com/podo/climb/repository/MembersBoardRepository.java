@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MembersBoardRepository extends JpaRepository<MembersBoard, Long> {
     MembersBoard findFirstByMemberIdAndBoardId(Long memberId, Long boardId);
@@ -13,4 +15,6 @@ public interface MembersBoardRepository extends JpaRepository<MembersBoard, Long
     Float findAverageScoreByBoardId(Long boardId);
 
     void deleteAllByBoardId(Long boardId);
+
+    List<MembersBoard> findByMemberId(Long memberId);
 }
