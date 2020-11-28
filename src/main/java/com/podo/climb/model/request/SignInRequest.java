@@ -3,8 +3,10 @@ package com.podo.climb.model.request;
 
 import com.podo.climb.model.OauthType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,6 +14,8 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequest {
     @ApiModelProperty(value = "자체 로그인이 아닐 경우 생략")
     String emailAddress;
