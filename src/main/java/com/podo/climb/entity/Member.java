@@ -75,6 +75,7 @@ public class Member {
         this.nickname = memberRequest.getNickname();
         this.emailAddress = memberRequest.getEmailAddress();
         this.profileImageUrl = memberRequest.getProfileImageUrl();
+        this.level = memberRequest.getLevel();
         this.oauthType = memberRequest.getOauthType();
 
         MemberRole memberRole = MemberRole.builder()
