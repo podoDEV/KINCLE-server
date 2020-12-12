@@ -18,7 +18,6 @@ public class MemberDetailResponse {
     private String emailAddress;
     private String nickname;
     private String profileImageUrl;
-    @JsonSerialize(using = ToStringSerializer.class)
     private Integer level;
     private List<GymResponse> gyms;
     private Integer likeCount;
