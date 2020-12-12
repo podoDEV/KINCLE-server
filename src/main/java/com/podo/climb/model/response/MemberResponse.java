@@ -1,5 +1,7 @@
 package com.podo.climb.model.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.podo.climb.entity.Member;
@@ -21,7 +23,6 @@ public class MemberResponse {
 
     private String profileImageUrl;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Integer level;
 
     @JsonSerialize(using = ToStringSerializer.class)
@@ -30,6 +31,7 @@ public class MemberResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     private List<MemberRole> memberRole;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String accessToken;
 
     public MemberResponse(Member member, String accessToken) {

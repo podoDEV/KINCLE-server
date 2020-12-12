@@ -71,9 +71,9 @@ public class MemberController {
 
     @ApiOperation(value = "비밀번호, oauth 정보 수정 불가")
     @PutMapping("/v1/members/{memberId}")
-    public ApiResult<Member> updateMember(@PathVariable Long memberId,
-                                          @RequestBody MemberRequest memberRequest) {
-        return new SuccessfulResult<>(memberService.updateMember(memberId, memberRequest));
+    public ApiResult<MemberResponse> updateMember(@PathVariable Long memberId,
+                                                  @RequestBody MemberRequest memberRequest) {
+        return new SuccessfulResult<>(new MemberResponse(memberService.updateMember(memberId, memberRequest), null));
     }
 
 
